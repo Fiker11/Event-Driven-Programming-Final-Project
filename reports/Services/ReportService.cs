@@ -16,43 +16,45 @@ namespace Reports.Services
 
 
         //create a new report
-        public async Task<bool> CreateReport(Report report)
+        public async Task<string> CreateReport(Report report)
         {
             try
             {
                 await _reportCollection.InsertOneAsync(report);
-                return true;
+                return "report created successfully!";
             }
             catch
             {
-                return false;
+                return "Failed to create report";
             }
         }
 
         //delete a report
-        public async Task<bool> DeleteReport(string id)
+        public async Task<string> DeleteReport(string id)
         {
             try
             {
+                //check if the report exists
                 var existingReport = await _reportCollection.Find(report => report.ReportId == id).FirstOrDefaultAsync();
                 if (existingReport == null)
                 {
-                    Console.WriteLine("Report not found");
+                    return $"Report with the id {id} not found.";
                 }
-
+                
+                //if the report existes delete the report
                 var status = await _reportCollection.DeleteOneAsync(report => report.ReportId == id);
                 if (status.DeletedCount > 0)
                 {
-                    return true;
+                    return $"Report with id {id} deleted successfully.";
                 }
                 else
                 {
-                    throw new Exception("Report not found"); // we need to work on edge cases
+                    return "Failed to delete the report.";
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                return false;
+                return $"An error occurred: {ex.Message}";
             }
         }
 
@@ -66,7 +68,7 @@ namespace Reports.Services
             return await _reportCollection.Find(report => true).ToListAsync();
         }
 
-        public async Task<bool> UpdateReport(string id, Report report)
+        public async Task<string> UpdateReport(string id, Report report)
         {
             try
             {
@@ -74,16 +76,16 @@ namespace Reports.Services
                 var status = await _reportCollection.ReplaceOneAsync(report => report.ReportId == id, report);
                 if (status.ModifiedCount > 0)
                 {
-                    return true;
+                   return $"Report with id {id} updated successfully!";
                 }
                 else
                 {
-                    return false;
+                    return "Failed to update the report.";
                 }
             }
             catch
             {
-                return false;
+                return "An error occurred.";
             }
         }
     }
