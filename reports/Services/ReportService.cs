@@ -20,6 +20,7 @@ namespace Reports.Services
         {
             try
             {
+                report.ReportDateAndTime = DateTime.UtcNow; // Set to current UTC time
                 await _reportCollection.InsertOneAsync(report);
                 return "report created successfully!";
             }
