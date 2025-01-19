@@ -1,9 +1,11 @@
-namespace Reports.Enums{
-    public enum ReportType{
+namespace Reports.Enums
+{
+    public enum ReportType
+    {
         Electrical,
         Plumbing,
         RoadMaintenance,
-        WaterSupply,
+        Water,
         Other
     }
 }

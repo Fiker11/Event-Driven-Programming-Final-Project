@@ -11,11 +11,11 @@ namespace Reports.Models{
         [BsonRepresentation(BsonType.String)] // to store an enum as a string in mongodb
         public ReportType ReportType{ get; set; } //type of report only from the enum class
 
+        [BsonRepresentation(BsonType.String)]
+        public ReportStatus ReportStatus { get; set; }//status of the report from the enum
+
         public string? ReportDescription{ get; set; } //Detailed description of the report
 
-        [BsonRepresentation(BsonType.String)]
-        public ReportStatus ReportStatus{ get; set; }//status of the report
-        
         public DateTime ReportDateAndTime { get; set; }//date and time of the report
 
         public string? ReportLocation{ get; set; } //location of the report

@@ -14,7 +14,6 @@ namespace Reports.Services
             _reportCollection = database.GetCollection<Report>(config["MongoDbSettings:CollectionName"]);
         }
 
-
         //create a new report
         public async Task<string> CreateReport(Report report)
         {
