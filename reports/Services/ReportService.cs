@@ -14,12 +14,12 @@ namespace Reports.Services
             _reportCollection = database.GetCollection<Report>(config["MongoDbSettings:CollectionName"]);
         }
 
-
         //create a new report
         public async Task<string> CreateReport(Report report)
         {
             try
             {
+                report.ReportDateAndTime = DateTime.UtcNow; // Set to current UTC time
                 await _reportCollection.InsertOneAsync(report);
                 return "report created successfully!";
             }
