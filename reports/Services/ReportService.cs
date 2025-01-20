@@ -14,78 +14,81 @@ namespace Reports.Services
             _reportCollection = database.GetCollection<Report>(config["MongoDbSettings:CollectionName"]);
         }
 
-        //create a new report
-        public async Task<string> CreateReport(Report report)
+        //CREATE NEW REPORT
+        public async Task CreateReport(Report report)
         {
             try
-            {
-                report.ReportDateAndTime = DateTime.UtcNow; // Set to current UTC time
+            {   //Set the report date and time to the current UTC time
+                report.ReportDateAndTime = DateTime.UtcNow;
                 await _reportCollection.InsertOneAsync(report);
-                return "report created successfully!";
             }
-            catch
+            catch (Exception ex)
             {
-                return "Failed to create report";
+                throw new Exception("Failed to create report.", ex);
             }
         }
 
-        //delete a report
-        public async Task<string> DeleteReport(string id)
+        //DELETE REPORT
+        public async Task DeleteReport(string id)
         {
-            try
+            //Check if the report with the id exists
+            var existingReport = await _reportCollection.Find(report => report.ReportId == id).FirstOrDefaultAsync();
+
+            //if the report does not exist, throw an exception
+            if (existingReport == null)
             {
-                //check if the report exists
-                var existingReport = await _reportCollection.Find(report => report.ReportId == id).FirstOrDefaultAsync();
-                if (existingReport == null)
-                {
-                    return $"Report with the id {id} not found.";
-                }
-                
-                //if the report existes delete the report
-                var status = await _reportCollection.DeleteOneAsync(report => report.ReportId == id);
-                if (status.DeletedCount > 0)
-                {
-                    return $"Report with id {id} deleted successfully.";
-                }
-                else
-                {
-                    return "Failed to delete the report.";
-                }
+                throw new KeyNotFoundException($"Report with ID {id} not found.");
             }
-            catch(Exception ex)
+
+            //if the report exists, delete it
+            var result = await _reportCollection.DeleteOneAsync(report => report.ReportId == id);
+
+            //if something went wrong, throw an exception
+            if (result.DeletedCount == 0)
             {
-                return $"An error occurred: {ex.Message}";
+                throw new Exception($"Failed to delete the report with ID {id}.");
             }
         }
 
+        //GET REPORT BY ID
         public async Task<Report> GetReportById(string id)
-        {
-            return await _reportCollection.Find(report => report.ReportId == id).FirstOrDefaultAsync();
+        {   //check if the report exixtes
+            var report = await _reportCollection.Find(report => report.ReportId == id).FirstOrDefaultAsync();
+            if (report == null)
+            {
+                throw new KeyNotFoundException($"Report with ID {id} not found.");
+            }
+            return report;
         }
 
+        //GET ALL REPORTS
         public async Task<List<Report>> GetReports()
         {
-            return await _reportCollection.Find(report => true).ToListAsync();
-        }
-
-        public async Task<string> UpdateReport(string id, Report report)
-        {
             try
             {
-                report.ReportId = id;
-                var status = await _reportCollection.ReplaceOneAsync(report => report.ReportId == id, report);
-                if (status.ModifiedCount > 0)
-                {
-                   return $"Report with id {id} updated successfully!";
-                }
-                else
-                {
-                    return "Failed to update the report.";
-                }
+                return await _reportCollection.Find(report => true).ToListAsync();
             }
-            catch
+            catch (Exception ex)
             {
-                return "An error occurred.";
+                throw new Exception("Failed to retrieve reports.", ex);
+            }
+        }
+
+        //UPDATE REPORT
+        public async Task UpdateReport(string id, Report report)
+        {   
+            //get the report with the id
+            var existingReport = await GetReportById(id);
+
+            report.ReportId = id; //so that the id will be consistent
+
+            //update the report
+            var result = await _reportCollection.ReplaceOneAsync(r => r.ReportId == id, report);
+
+            //if the report was not updated, throw an exception
+            if (result.ModifiedCount == 0)
+            {
+                throw new Exception($"Failed to update the report with ID {id}.");
             }
         }
     }
