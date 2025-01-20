@@ -7,7 +7,7 @@ using Reports.Enums;
 
 namespace Reports.Controllers{
     [ApiController]
-    [Route("api/[Controller]")]
+    [Route("[Controller]")]
 
     public class ReportController : ControllerBase{
     private readonly IReportService _reportService;
@@ -17,69 +17,114 @@ namespace Reports.Controllers{
     }
 
 
-    //Create a new report that validates the input and set the default status to pending if its not set..
+    //CREATE A NEW REPORT
     [HttpPost]
     public async Task<ActionResult> CreateReport([FromBody] ReportDto reportDto)
-    {
-        if(!ModelState.IsValid){
-            return BadRequest("Invalid model state");
-        }else
+    {   //check if the model state is valid
+        if (!ModelState.IsValid){
+                return BadRequest(ModelState);
+        }
+        //create a new report
+        var report = new Report
         {
-            try
-            {
-                var report = new Report
-                {
-                    ReportType = reportDto.ReportType,
-                    ReportStatus = reportDto.ReportStatus != 0 ? reportDto.ReportStatus : ReportStatus.Pending, // Default to pending if not set
-                    ReportDescription = reportDto.ReportDescription,
-                    ReportLocation = reportDto.ReportLocation,
-                    ReportDateAndTime = DateTime.UtcNow
-                };
-                return Ok(await _reportService.CreateReport(report));
-            }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
+            ReportType = reportDto.ReportType,
+            ReportStatus = reportDto.ReportStatus != 0 ? reportDto.ReportStatus : ReportStatus.Pending,
+            ReportDescription = reportDto.ReportDescription,
+            ReportLocation = reportDto.ReportLocation,
+            ReportDateAndTime = DateTime.UtcNow
+        };
+        
+        //try to create the report or else catch the exception
+        try{
+            await _reportService.CreateReport(report);
+            return Ok("Report created successfully.");
+        }catch (Exception ex){
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
-
+   //GET ALL REPORTS
     [HttpGet]
-    public async Task<ActionResult> GetReports(){
-        try{
-            return Ok(await _reportService.GetReports());
-        }catch(Exception e){
-            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+    public async Task<ActionResult<List<Report>>> GetReports(){
+        try
+        {
+            var reports = await _reportService.GetReports();
+            return Ok(reports);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult> GetRepotById(string id){
-        try{
-            return Ok(await _reportService.GetReportById(id));
-        }catch(Exception e){
-            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+    //GET REPORT BY ID
+    [HttpGet("search/{id}")]
+    public async Task<ActionResult<Report>> GetReportById(string id)
+    {
+        try
+        {
+            var report = await _reportService.GetReportById(id);
+            return Ok(report);
         }
-    }
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateReport(string id, Report report) {
-        try {
-            return Ok(await _reportService.UpdateReport(id, report));
-        } catch (Exception e) {
-            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex) //general exception handeling
+        {
+           return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
+    //UPDATE A REPORT
+    [HttpPut("update/{id}")]
+    public async Task<ActionResult> UpdateReport(string id, ReportDto reportDto) {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
-    [HttpDelete("{id}")]
+        try
+        {
+            var report = new Report
+            {
+                ReportType = reportDto.ReportType,
+                ReportStatus = reportDto.ReportStatus,
+                ReportDescription = reportDto.ReportDescription,
+                ReportLocation = reportDto.ReportLocation
+            };
+
+            await _reportService.UpdateReport(id, report);
+            return Ok("Report updated successfully.");
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+           return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    //Delete a report by its id
+    [HttpDelete("delete/{id}")]
     public async Task<ActionResult> DeleteReport(string id) {
-        try {
-            return Ok(await _reportService.DeleteReport(id));
-        } catch (Exception e) {
-            return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        try
+        {
+        await _reportService.DeleteReport(id);
+            return Ok($"Report with ID {id} deleted successfully.");
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
+    
     }
 }

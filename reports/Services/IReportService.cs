@@ -4,7 +4,7 @@ namespace Reports.Services{
     public interface IReportService{
 
         //Method to create a report
-        public Task<string> CreateReport(Report report);
+        public Task CreateReport(Report report);
 
         //Method to get all reports
         public Task<List<Report>> GetReports();
@@ -13,9 +13,9 @@ namespace Reports.Services{
         public Task<Report> GetReportById(string id);
         
         //Method to update a report
-        public Task<string> UpdateReport(string id, Report report);
+        public Task UpdateReport(string id, Report report);
         
         //Method to remove a report
-        public Task<string> DeleteReport(string id);
+        public Task DeleteReport(string id);
     }
 }
