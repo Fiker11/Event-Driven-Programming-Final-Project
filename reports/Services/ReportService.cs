@@ -1,4 +1,5 @@
 using MongoDB.Driver;
+using Reports.Enums;
 using Reports.Models;
 
 namespace Reports.Services
@@ -91,5 +92,39 @@ namespace Reports.Services
                 throw new Exception($"Failed to update the report with ID {id}.");
             }
         }
+
+        public async Task<List<Report>> SearchReports(string? type, string? status, string? location, string? description)
+        {
+            var filters = Builders<Report>.Filter.Empty;
+
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                if (Enum.TryParse<ReportType>(type, true, out var reportType))
+                {
+                    filters &= Builders<Report>.Filter.Eq(r => r.ReportType, reportType);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                if (Enum.TryParse<ReportStatus>(status, true, out var reportStatus))
+                {
+                    filters &= Builders<Report>.Filter.Eq(r => r.ReportStatus, reportStatus);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(location))
+            {
+                filters &= Builders<Report>.Filter.Regex(r => r.ReportLocation, new MongoDB.Bson.BsonRegularExpression(location, "i"));
+            }
+
+            if (!string.IsNullOrWhiteSpace(description))
+            {
+                filters &= Builders<Report>.Filter.Regex(r => r.ReportDescription, new MongoDB.Bson.BsonRegularExpression(description, "i"));
+            }
+
+            return await _reportCollection.Find(filters).ToListAsync();
+        }
+
     }
 }

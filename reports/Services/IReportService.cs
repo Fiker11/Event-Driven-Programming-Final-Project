@@ -17,5 +17,8 @@ namespace Reports.Services{
         
         //Method to remove a report
         public Task DeleteReport(string id);
+        
+        // Method to search reports
+        Task<List<Report>> SearchReports(string? type, string? status, string? location, string? description);
     }
 }
