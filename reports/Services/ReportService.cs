@@ -76,7 +76,7 @@ namespace Reports.Services
 
         //UPDATE REPORT
         public async Task UpdateReport(string id, Report report)
-        {   
+        {
             //get the report with the id
             var existingReport = await GetReportById(id);
 
@@ -89,6 +89,26 @@ namespace Reports.Services
             if (result.ModifiedCount == 0)
             {
                 throw new Exception($"Failed to update the report with ID {id}.");
+            }
+        }
+
+        //GET REPORTS PAGINATED
+        public async Task<List<Report>> GetReportsPaginated(int pageNumber, int pageSize)
+        {
+            if (pageNumber < 1 || pageSize < 1)
+            {
+                throw new ArgumentException("Page number and page size must be greater than 0.");
+            }
+            try
+            {
+                return await _reportCollection.Find(report => true)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Limit(pageSize)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve reports.", ex);
             }
         }
     }
