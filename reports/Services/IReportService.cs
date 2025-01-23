@@ -22,5 +22,9 @@ namespace Reports.Services
 
         //Method to get reports paginated to limit the number of reports returned
         Task<List<Report>> GetReportsPaginated(int pageNumber, int pageSize);
+        
+        // Method to search reports
+        Task<List<Report>> SearchReports(string? type, string? status, string? location, string? description);
+
     }
 }
