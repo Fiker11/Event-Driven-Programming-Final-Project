@@ -125,6 +125,23 @@ namespace Reports.Controllers{
         }
     }
 
+    [HttpGet("search")]
+    public async Task<ActionResult<List<Report>>> SearchReports(
+        [FromQuery] string? type,
+        [FromQuery] string? status,
+        [FromQuery] string? location,
+        [FromQuery] string? description)
+    {
+        try
+        {
+            var reports = await _reportService.SearchReports(type, status, location, description);
+            return Ok(reports);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
     
     }
 }
