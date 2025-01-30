@@ -1,0 +1,64 @@
+# AYTO: Crowdsourced Problem Reporting Platform for Addis Ababa
+
+## Project Overview
+
+In this project, we have implemented several functionalities from our final year project called "AYTO: Crowdsourced Problem Reporting Platform for Addis Ababa". we have implemented the report issue and user registration functionalities.
+
+## Features Implemented
+
+We have focused on implementing three advanced features as per the project instructions:
+
+1. Search and Filtering Functionality
+    - Users can search for specific reports using keywords.
+    - Filtering options are available to narrow down results
+
+2. Pagination for Large Datasets
+    - To handle large volumes of data efficiently, we have implemented pagination.
+
+3. Input Validation for Request Data
+    - All user inputs are validated to ensure data integrity and security.
+    - Validation checks include required fields, data formats, and length constraints.
+
+## Tech Stack
+    1. ASP.NET Core 7
+    2. MongoDB
+    3. API format - RESTful APIs
+    4. validation - Data Annotations
+
+## Getting Started
+
+To get started with the project, follow these steps:
+
+1. Clone the repository:
+   
+    git clone https://github.com/Fiker11/Event-Driven-Programming-Final-Project.git
+    
+2. Navigate to the project directory:
+    
+    cd reports
+   
+3. Install the required dependencies:
+    
+   dotnet restore
+  
+4. Run the application 
+
+    dotnet run
+
+## Resources Used
+    1. Frameworks & Tools:
+        - ASP.NET Core 7
+        - MongoDB
+        - MongoDb Compass
+        - Swagger for API documentaion
+    2. AI Assistance:
+        - ChatGPT
+        - GitHub Copilot
+
+
+
+
+THANK YOU!
+
+
+
