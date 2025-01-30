@@ -1,11 +1,3 @@
-/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.csproj.AssemblyReference.cache
-/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.GeneratedMSBuildEditorConfig.editorconfig
-/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.AssemblyInfoInputs.cache
-/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.AssemblyInfo.cs
-/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.csproj.CoreCompileInputs.cache
-/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.MvcApplicationPartsAssemblyInfo.cs
-/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.MvcApplicationPartsAssemblyInfo.cache
-/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.sourcelink.json
 /Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/bin/Debug/net8.0/appsettings.Development.json
 /Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/bin/Debug/net8.0/appsettings.json
 /Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/bin/Debug/net8.0/reports
@@ -24,6 +16,14 @@
 /Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/bin/Debug/net8.0/ZstdSharp.dll
+/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.csproj.AssemblyReference.cache
+/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.GeneratedMSBuildEditorConfig.editorconfig
+/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.AssemblyInfoInputs.cache
+/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.AssemblyInfo.cs
+/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.csproj.CoreCompileInputs.cache
+/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.MvcApplicationPartsAssemblyInfo.cs
+/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.MvcApplicationPartsAssemblyInfo.cache
+/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/reports.sourcelink.json
 /Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/staticwebassets.build.json
 /Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/staticwebassets.development.json
 /Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/Debug/net8.0/staticwebassets/msbuild.reports.Microsoft.AspNetCore.StaticWebAssets.props

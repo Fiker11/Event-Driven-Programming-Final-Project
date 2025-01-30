@@ -15,54 +15,20 @@ namespace Reports.Services
             _reportCollection = database.GetCollection<Report>(config["MongoDbSettings:CollectionName"]);
         }
 
-        //CREATE NEW REPORT
+        //create a report
         public async Task CreateReport(Report report)
         {
             try
-            {   //Set the report date and time to the current UTC time
-                report.ReportDateAndTime = DateTime.UtcNow;
+            {   
                 await _reportCollection.InsertOneAsync(report);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception("Failed to create report.", ex);
+                throw;
             }
         }
 
-        //DELETE REPORT
-        public async Task DeleteReport(string id)
-        {
-            //Check if the report with the id exists
-            var existingReport = await _reportCollection.Find(report => report.ReportId == id).FirstOrDefaultAsync();
-
-            //if the report does not exist, throw an exception
-            if (existingReport == null)
-            {
-                throw new KeyNotFoundException($"Report with ID {id} not found.");
-            }
-
-            //if the report exists, delete it
-            var result = await _reportCollection.DeleteOneAsync(report => report.ReportId == id);
-
-            //if something went wrong, throw an exception
-            if (result.DeletedCount == 0)
-            {
-                throw new Exception($"Failed to delete the report with ID {id}.");
-            }
-        }
-
-        //GET REPORT BY ID
-        public async Task<Report> GetReportById(string id)
-        {   //check if the report exixtes
-            var report = await _reportCollection.Find(report => report.ReportId == id).FirstOrDefaultAsync();
-            if (report == null)
-            {
-                throw new KeyNotFoundException($"Report with ID {id} not found.");
-            }
-            return report;
-        }
-
-        //GET ALL REPORTS
+        //get all reports
         public async Task<List<Report>> GetReports()
         {
             try
@@ -75,7 +41,27 @@ namespace Reports.Services
             }
         }
 
-        //UPDATE REPORT
+        //get a report by id
+        public async Task<Report> GetReportById(string id)
+        {
+            //check if the report exixtes
+            var report = await _reportCollection.Find(report => report.ReportId == id).FirstOrDefaultAsync();
+
+            if (report == null)
+            {
+                throw new KeyNotFoundException($"Report with ID {id} not found.");
+            }
+            try
+            {
+                return report;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve the report.", ex);
+            }
+        }
+
+        //update a report
         public async Task UpdateReport(string id, Report report)
         {
             //get the report with the id
@@ -83,18 +69,47 @@ namespace Reports.Services
 
             report.ReportId = id; //so that the id will be consistent
 
-            //update the report
-            var result = await _reportCollection.ReplaceOneAsync(r => r.ReportId == id, report);
-
-            //if the report was not updated, throw an exception
-            if (result.ModifiedCount == 0)
+            try
             {
-                throw new Exception($"Failed to update the report with ID {id}.");
+                //update the report
+                var result = await _reportCollection.ReplaceOneAsync(r => r.ReportId == id, report);
+
+                //if the report was not updated, throw an exception
+                if (result.ModifiedCount == 0)
+                {
+                    throw new Exception($"Failed to update the report with ID {id}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to update the report.", ex);
             }
         }
 
+        //delete a report
+        public async Task DeleteReport(string id)
+        {
+            //Check if the report with the id exists
+            var existingReport = await GetReportById(id);
 
-        //GET REPORTS PAGINATED
+            try
+            {
+                //if the report exists, delete it
+                var result = await _reportCollection.DeleteOneAsync(report => report.ReportId == id);
+
+                //if the report is not deleted, throw an exception
+                if (result.DeletedCount == 0)
+                {
+                    throw new Exception($"Failed to delete the report with ID {id}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to delete the report.", ex);
+            }
+        }
+
+        //get reports paginated
         public async Task<List<Report>> GetReportsPaginated(int pageNumber, int pageSize)
         {
             if (pageNumber < 1 || pageSize < 1)
@@ -114,37 +129,39 @@ namespace Reports.Services
             }
         }
 
-        public async Task<List<Report>> SearchReports(string? type, string? status, string? location, string? description)
+        //search reports by type, status, and location
+        public async Task<List<Report>> SearchReports(string? type, string? status, string? location)
         {
-            var filters = Builders<Report>.Filter.Empty;
+            try {
+                var filters = Builders<Report>.Filter.Empty;
 
-            if (!string.IsNullOrWhiteSpace(type))
-            {
-                if (Enum.TryParse<ReportType>(type, true, out var reportType))
+                if (!string.IsNullOrWhiteSpace(type))
                 {
-                    filters &= Builders<Report>.Filter.Eq(r => r.ReportType, reportType);
+                    if (Enum.TryParse<ReportType>(type, true, out var reportType))
+                    {
+                        filters &= Builders<Report>.Filter.Eq(r => r.ReportType, reportType);
+                    }
                 }
-            }
 
-            if (!string.IsNullOrWhiteSpace(status))
-            {
-                if (Enum.TryParse<ReportStatus>(status, true, out var reportStatus))
+                if (!string.IsNullOrWhiteSpace(status))
                 {
-                    filters &= Builders<Report>.Filter.Eq(r => r.ReportStatus, reportStatus);
+                    if (Enum.TryParse<ReportStatus>(status, true, out var reportStatus))
+                    {
+                        filters &= Builders<Report>.Filter.Eq(r => r.ReportStatus, reportStatus);
+                    }
                 }
-            }
 
-            if (!string.IsNullOrWhiteSpace(location))
+                if (!string.IsNullOrWhiteSpace(location))
+                {
+                    filters &= Builders<Report>.Filter.Regex(r => r.ReportLocation, new MongoDB.Bson.BsonRegularExpression(location, "i"));
+                }
+
+                return await _reportCollection.Find(filters).ToListAsync();
+            }
+            catch(Exception ex)
             {
-                filters &= Builders<Report>.Filter.Regex(r => r.ReportLocation, new MongoDB.Bson.BsonRegularExpression(location, "i"));
+                throw new Exception("Failed to search reports.", ex);
             }
-
-            if (!string.IsNullOrWhiteSpace(description))
-            {
-                filters &= Builders<Report>.Filter.Regex(r => r.ReportDescription, new MongoDB.Bson.BsonRegularExpression(description, "i"));
-            }
-
-            return await _reportCollection.Find(filters).ToListAsync();
         }
 
     }

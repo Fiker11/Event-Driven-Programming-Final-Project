@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Reports.Enums;
 
 namespace Reports.Dtos{
+    //Dto class for the report
     public class ReportDto{
 
         [Required]
@@ -10,7 +11,7 @@ namespace Reports.Dtos{
         public ReportType ReportType{ get; set; }
 
         [Required]
-        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [JsonConverter(typeof(JsonStringEnumConverter))] // Converts enums to strings
         public ReportStatus ReportStatus{ get; set; }
 
         [Required]

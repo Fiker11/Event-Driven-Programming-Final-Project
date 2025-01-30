@@ -2,9 +2,9 @@ using Reports.Models;
 
 namespace Reports.Services
 {
+    //Interface for the ReportService
     public interface IReportService
     {
-
         //Method to create a report
         public Task CreateReport(Report report);
 
@@ -14,17 +14,16 @@ namespace Reports.Services
         //Method to get a report by id
         public Task<Report> GetReportById(string id);
 
-        //Method to update a report
+        //Method to update a report by id
         public Task UpdateReport(string id, Report report);
 
-        //Method to remove a report
+        //Method to remove a report by id
         public Task DeleteReport(string id);
 
-        //Method to get reports paginated to limit the number of reports returned
+        //Method to get reports paginated
         Task<List<Report>> GetReportsPaginated(int pageNumber, int pageSize);
         
-        // Method to search reports
-        Task<List<Report>> SearchReports(string? type, string? status, string? location, string? description);
-
+        // Method to search reports by type, status and location
+        Task<List<Report>> SearchReports(string? type, string? status, string? location);
     }
 }

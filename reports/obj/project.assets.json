@@ -1070,19 +1070,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Yoni\\.nuget\\packages\\": {}
+    "/Users/fikerdilnesawkebede/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Yoni\\Desktop\\vsFiles\\ReportApi\\reports\\reports.csproj",
+      "projectUniqueName": "/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/reports.csproj",
       "projectName": "reports",
-      "projectPath": "C:\\Users\\Yoni\\Desktop\\vsFiles\\ReportApi\\reports\\reports.csproj",
-      "packagesPath": "C:\\Users\\Yoni\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Yoni\\Desktop\\vsFiles\\ReportApi\\reports\\obj\\",
+      "projectPath": "/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/reports.csproj",
+      "packagesPath": "/Users/fikerdilnesawkebede/.nuget/packages/",
+      "outputPath": "/Users/fikerdilnesawkebede/Desktop/Event-Driven-Programming-Final-Project/reports/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Yoni\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/Users/fikerdilnesawkebede/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -1143,7 +1143,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.404/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
