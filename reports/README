@@ -20,7 +20,7 @@ We have focused on implementing three advanced features as per the project instr
     - Validation checks include required fields, data formats, and length constraints.
 
 ## Tech Stack
-    1. ASP.NET Core 7
+    1. ASP.NET 
     2. MongoDB
     3. API format - RESTful APIs
     4. validation - Data Annotations
@@ -47,7 +47,7 @@ To get started with the project, follow these steps:
 
 ## Resources Used
     1. Frameworks & Tools:
-        - ASP.NET Core 7
+        - ASP.NET
         - MongoDB
         - MongoDb Compass
         - Swagger for API documentaion
