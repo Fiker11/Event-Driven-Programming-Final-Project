@@ -3,7 +3,8 @@ using Reports.Services;
 using Reports.Models;
 using Reports.Dtos;
 
-namespace Reports.Controllers{
+namespace Reports.Controllers
+{
     [ApiController]
     [Route("[Controller]")]
     public class UserController : ControllerBase
@@ -29,7 +30,7 @@ namespace Reports.Controllers{
                 UserName = userDto.UserName,
                 UserEmail = userDto.UserEmail,
                 UserPhoneNumber = userDto.UserPhoneNumber,
-                UserAddress = userDto.UserAddress,  
+                UserAddress = userDto.UserAddress,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -123,7 +124,7 @@ namespace Reports.Controllers{
 
         //GET USER Paginated
         [HttpGet("Paginated")]
-        public async Task<ActionResult> GetUsersPaginated([FromQuery] int pageNumber, [FromQuery] int pageSize)
+        public async Task<ActionResult> GetUsersPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
@@ -138,7 +139,7 @@ namespace Reports.Controllers{
 
         //SEARCH USERS
         [HttpGet("Search")]
-        public async Task<ActionResult> SearchUsers([FromQuery] string name, [FromQuery] string email)
+        public async Task<ActionResult> SearchUsers([FromQuery] string? name, [FromQuery] string? email)
         {
             try
             {
@@ -150,6 +151,6 @@ namespace Reports.Controllers{
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        
+
     }
 }

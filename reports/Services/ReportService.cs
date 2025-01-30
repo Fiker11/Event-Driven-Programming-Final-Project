@@ -116,35 +116,40 @@ namespace Reports.Services
 
         public async Task<List<Report>> SearchReports(string? type, string? status, string? location, string? description)
         {
-            var filters = Builders<Report>.Filter.Empty;
+            try {
+                var filters = Builders<Report>.Filter.Empty;
 
-            if (!string.IsNullOrWhiteSpace(type))
-            {
-                if (Enum.TryParse<ReportType>(type, true, out var reportType))
+                if (!string.IsNullOrWhiteSpace(type))
                 {
-                    filters &= Builders<Report>.Filter.Eq(r => r.ReportType, reportType);
+                    if (Enum.TryParse<ReportType>(type, true, out var reportType))
+                    {
+                        filters &= Builders<Report>.Filter.Eq(r => r.ReportType, reportType);
+                    }
                 }
-            }
 
-            if (!string.IsNullOrWhiteSpace(status))
-            {
-                if (Enum.TryParse<ReportStatus>(status, true, out var reportStatus))
+                if (!string.IsNullOrWhiteSpace(status))
                 {
-                    filters &= Builders<Report>.Filter.Eq(r => r.ReportStatus, reportStatus);
+                    if (Enum.TryParse<ReportStatus>(status, true, out var reportStatus))
+                    {
+                        filters &= Builders<Report>.Filter.Eq(r => r.ReportStatus, reportStatus);
+                    }
                 }
-            }
 
-            if (!string.IsNullOrWhiteSpace(location))
+                if (!string.IsNullOrWhiteSpace(location))
+                {
+                    filters &= Builders<Report>.Filter.Regex(r => r.ReportLocation, new MongoDB.Bson.BsonRegularExpression(location, "i"));
+                }
+
+                if (!string.IsNullOrWhiteSpace(description))
+                {
+                    filters &= Builders<Report>.Filter.Regex(r => r.ReportDescription, new MongoDB.Bson.BsonRegularExpression(description, "i"));
+                }
+
+                return await _reportCollection.Find(filters).ToListAsync();
+            }catch(Exception ex)
             {
-                filters &= Builders<Report>.Filter.Regex(r => r.ReportLocation, new MongoDB.Bson.BsonRegularExpression(location, "i"));
+                throw new Exception("Failed to search reports.", ex);
             }
-
-            if (!string.IsNullOrWhiteSpace(description))
-            {
-                filters &= Builders<Report>.Filter.Regex(r => r.ReportDescription, new MongoDB.Bson.BsonRegularExpression(description, "i"));
-            }
-
-            return await _reportCollection.Find(filters).ToListAsync();
         }
 
     }
