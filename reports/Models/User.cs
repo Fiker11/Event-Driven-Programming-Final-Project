@@ -1,9 +1,9 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Reports.Enums;
 
 namespace Reports
 {
+    //Model class for the user
     public class User
     {
         [BsonId]
@@ -13,8 +13,6 @@ namespace Reports
         public string? UserName { get; set; } //name of the user
 
         public string? UserEmail{ get; set; } //email of the user
-
-        //public string? UserPassword { get; set; } //password of the user
 
         public string? UserPhoneNumber { get; set; } //phone number of the user
 

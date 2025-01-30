@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Reports.Dtos
 {
+    //Dto class for the user
     public class UserDto
     {
         [Required]
@@ -20,6 +21,6 @@ namespace Reports.Dtos
 
         public string? UserAddress { get; set; } //address of the user
 
-        //date and time of the user creation is removed because the user doesnt provide the date and time
+        //date and time of the user creation is removed because the user doesn't provide the date and time
     }
 }

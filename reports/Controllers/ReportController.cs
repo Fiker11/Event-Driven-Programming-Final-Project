@@ -4,12 +4,10 @@ using Reports.Models;
 using Reports.Dtos;
 using Reports.Enums;
 
-
 namespace Reports.Controllers
 {
     [ApiController]
     [Route("[Controller]")]
-
     public class ReportController : ControllerBase
     {
         private readonly IReportService _reportService;
@@ -19,15 +17,16 @@ namespace Reports.Controllers
             _reportService = reportService;
         }
 
-
-        //CREATE A NEW REPORT
+        //create a report
         [HttpPost]
         public async Task<ActionResult> CreateReport([FromBody] ReportDto reportDto)
-        {   //check if the model state is valid
+        {  
+            //check if the model state is valid
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             //create a new report
             var report = new Report
             {
@@ -35,7 +34,7 @@ namespace Reports.Controllers
                 ReportStatus = reportDto.ReportStatus != 0 ? reportDto.ReportStatus : ReportStatus.Pending,
                 ReportDescription = reportDto.ReportDescription,
                 ReportLocation = reportDto.ReportLocation,
-                ReportDateAndTime = DateTime.UtcNow
+                ReportDateAndTime = DateTime.UtcNow //set the created at date
             };
 
             //try to create the report or else catch the exception
@@ -50,7 +49,7 @@ namespace Reports.Controllers
             }
         }
 
-        //GET ALL REPORTS
+        //get all reports
         [HttpGet]
         public async Task<ActionResult<List<Report>>> GetReports()
         {
@@ -65,7 +64,7 @@ namespace Reports.Controllers
             }
         }
 
-        //GET REPORT BY ID
+        //get a report by id
         [HttpGet("search/{id}")]
         public async Task<ActionResult<Report>> GetReportById(string id)
         {
@@ -78,21 +77,23 @@ namespace Reports.Controllers
             {
                 return NotFound(ex.Message);
             }
-            catch (Exception ex) //general exception handeling
+            catch (Exception ex) 
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        //UPDATE A REPORT
+        //update a report
         [HttpPut("update/{id}")]
         public async Task<ActionResult> UpdateReport(string id, ReportDto reportDto)
         {
+            //check if the model state is valid
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            
+            //try to update the report or else catch the exception
             try
             {
                 var report = new Report
@@ -135,7 +136,7 @@ namespace Reports.Controllers
             }
         }
 
-        //GET REPORTS PAGINATED
+        //get all reports paginated
         [HttpGet("paginated")]
         public async Task<ActionResult<List<Report>>> GetReportsPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
@@ -154,24 +155,23 @@ namespace Reports.Controllers
             }
         }
 
-
-    [HttpGet("search")]
-    public async Task<ActionResult<List<Report>>> SearchReports(
-        [FromQuery] string? type,
-        [FromQuery] string? status,
-        [FromQuery] string? location,
-        [FromQuery] string? description)
-    {
-        try
+        //search reports by differnt filters 
+        [HttpGet("search")]
+        public async Task<ActionResult<List<Report>>> SearchReports(
+            [FromQuery] string? type,
+            [FromQuery] string? status,
+            [FromQuery] string? location
+            )
         {
-            var reports = await _reportService.SearchReports(type, status, location, description);
-            return Ok(reports);
+            try
+            {
+                var reports = await _reportService.SearchReports(type, status, location);
+                return Ok(reports);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        }
-    }
-    
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Reports.Services;
-using Reports.Models;
 using Reports.Dtos;
 
 namespace Reports.Controllers
@@ -16,14 +15,16 @@ namespace Reports.Controllers
             _userService = userService;
         }
 
-        //CREATE A NEW USER
+        //create a user 
         [HttpPost]
         public async Task<ActionResult> CreateUser([FromBody] UserDto userDto)
-        {   //check if the model state is valid
+        {   
+            //check if the model state is valid
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             //create a new user
             var user = new User
             {
@@ -31,7 +32,7 @@ namespace Reports.Controllers
                 UserEmail = userDto.UserEmail,
                 UserPhoneNumber = userDto.UserPhoneNumber,
                 UserAddress = userDto.UserAddress,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow //set the created at date
             };
 
             //try to create the user or else catch the exception
@@ -46,7 +47,7 @@ namespace Reports.Controllers
             }
         }
 
-        //GET ALL USERS
+        //get all users
         [HttpGet]
         public async Task<ActionResult<List<User>>> GetUsers()
         {
@@ -61,7 +62,7 @@ namespace Reports.Controllers
             }
         }
 
-        //GET USER BY ID
+        //get user by id
         [HttpGet("{userId}")]
         public async Task<ActionResult<User>> GetUserById(string userId)
         {
@@ -70,13 +71,17 @@ namespace Reports.Controllers
                 var user = await _userService.GetUserById(userId);
                 return Ok(user);
             }
+            catch(KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        //UPDATE USER
+        //update user by id
         [HttpPut("{userId}")]
         public async Task<ActionResult> UpdateUser(string userId, [FromBody] UserDto userDto)
         {
@@ -101,13 +106,36 @@ namespace Reports.Controllers
                 await _userService.UpdateUser(userId, user);
                 return Ok("User updated successfully.");
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        //DELETE USER
+        //get user by email
+        [HttpGet("Email/{email}")]
+        public async Task<ActionResult<User>> GetUserByEmail(string email)
+        {
+            try
+            {
+                var user = await _userService.GetUserByEmail(email);
+                return Ok(user);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        //delete user by id
         [HttpDelete("{userId}")]
         public async Task<ActionResult> DeleteUser(string userId)
         {
@@ -116,13 +144,17 @@ namespace Reports.Controllers
                 await _userService.DeleteUser(userId);
                 return Ok("User deleted successfully.");
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        //GET USER Paginated
+        //get all users paginated
         [HttpGet("Paginated")]
         public async Task<ActionResult> GetUsersPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
@@ -137,9 +169,11 @@ namespace Reports.Controllers
             }
         }
 
-        //SEARCH USERS
+        //search users by name or email
         [HttpGet("Search")]
-        public async Task<ActionResult> SearchUsers([FromQuery] string? name, [FromQuery] string? email)
+        public async Task<ActionResult> SearchUsers(
+            [FromQuery] string? name, 
+            [FromQuery] string? email)
         {
             try
             {

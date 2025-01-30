@@ -19,7 +19,6 @@ namespace Reports.Services
         {
             try
             {
-                user.CreatedAt = DateTime.UtcNow;
                 await _userCollection.InsertOneAsync(user);
             }
             catch (Exception ex)
@@ -28,41 +27,7 @@ namespace Reports.Services
             }
         }
 
-        //Delete user
-        public async Task DeleteUser(string id)
-        {
-            var existingUser = await _userCollection.Find(user => user.UserId == id).FirstOrDefaultAsync();
-            if (existingUser == null)
-            {
-                throw new KeyNotFoundException($"User with ID {id} not found.");
-            }
-            var result = await _userCollection.DeleteOneAsync(user => user.UserId == id);
-            if (result.DeletedCount == 0)
-            {
-                throw new Exception($"Failed to delete the user with ID {id}.");
-            }
-        }
-
-        public async Task<User> GetUserById(string id)
-        {
-            var user = await _userCollection.Find(user => user.UserId == id).FirstOrDefaultAsync();
-            if (user == null)
-            {
-                throw new KeyNotFoundException($"User with ID {id} not found.");
-            }
-            return user;
-        }
-
-        public async Task<User> GetUserByEmail(string email)
-        {
-            var user = await _userCollection.Find(user => user.UserEmail == email).FirstOrDefaultAsync();
-            if (user == null)
-            {
-                throw new KeyNotFoundException($"User with email {email} not found.");
-            }
-            return user;
-        }
-
+        //get all users
         public Task<List<User>> GetUsers()
         {
             try
@@ -75,16 +40,37 @@ namespace Reports.Services
             }
         }
 
-        public async Task UpdateUser(string id, User user)
+        //get user by id
+        public async Task<User> GetUserById(string id)
         {
+            //check if the user exists
+            var user = await _userCollection.Find(user => user.UserId == id).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with ID {id} not found.");
+            }
+
             try
             {
-                var existingUser = await _userCollection.Find(user => user.UserId == id).FirstOrDefaultAsync();
-                if (existingUser == null)
-                {
-                    throw new KeyNotFoundException($"User with ID {id} not found.");
-                }
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve user.", ex);
+            }
+        }
+
+        //update user by id 
+        public async Task UpdateUser(string id, User user)
+        {
+            var existingUser = await GetUserById(id);
+            user.UserId = id; //so that the id is not changed
+            try
+            {
+                //update the user
                 var result = await _userCollection.ReplaceOneAsync(user => user.UserId == id, user);
+
+                //if the user is not updated, throw an exception
                 if (result.ModifiedCount == 0)
                 {
                     throw new Exception($"Failed to update the user with ID {id}.");
@@ -96,6 +82,49 @@ namespace Reports.Services
             }
         }
 
+        //get user by email
+        public async Task<User> GetUserByEmail(string email)
+        {
+            try
+            {
+                var user = await _userCollection.Find(user => user.UserEmail == email).FirstOrDefaultAsync();
+                if (user == null)
+                {
+                    throw new KeyNotFoundException($"User with email {email} not found.");
+                }
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve user.", ex);
+            }
+        }
+
+        //Delete user by id
+        public async Task DeleteUser(string id)
+        {
+            //check if the user exists
+            var existingUser = await GetUserById(id);
+
+            try
+            {
+                //if the user exists, delete the user
+                var result = await _userCollection.DeleteOneAsync(user => user.UserId == id);
+
+                //if the user is not deleted, throw an exception
+                if (result.DeletedCount == 0)
+                {
+                    throw new Exception($"Failed to delete the user with ID {id}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to delete user.", ex);
+            }
+        }
+
+        //get users paginated
         public Task<List<User>> GetUsersPaginated(int pageNumber, int pageSize)
         {
             if (pageNumber < 1 || pageSize < 1)
@@ -104,7 +133,9 @@ namespace Reports.Services
             }
             try
             {
-                return _userCollection.Find(user => true).Skip((pageNumber - 1) * pageSize).Limit(pageSize).ToListAsync();
+                return _userCollection.Find(user => true)
+                .Skip((pageNumber - 1) * pageSize)
+                .Limit(pageSize).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -112,6 +143,7 @@ namespace Reports.Services
             }
         }
 
+        //search users by name and email
         public Task<List<User>> SearchUsers(string? name, string? email)
         {
             try
